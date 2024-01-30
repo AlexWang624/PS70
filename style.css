@@ -406,6 +406,11 @@
       font-size: 1.6rem;
       /* Adjust font size for smaller devices */
     }
+
+    .main-content {
+    font-size: 1.6rem;
+    width: 80%;
+    }
   }
 
   @media (max-width: 480px) {
@@ -423,5 +428,10 @@
     .nav-item {
       font-size: 1.0rem;
       /* Further reduced font size */
+    }
+
+    .main-content {
+    font-size: 1.2rem;
+    width: 80%;
     }
   }
