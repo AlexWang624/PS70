@@ -8,6 +8,7 @@
     /* --logo-font: "VT323", monospace; */
     --logo-font: "Helvetica Neue";
     --about-font: "Helvetica Neue";
+    --main-font: "Helvetica Neue";
     --nav-font: "Helvetica Neue";
     --nav-bar-color-1: #abe1f9;
     --nav-bar-color-2: #8779c3;
@@ -143,8 +144,8 @@
   .main-content {
     padding-top: 50px;
     min-height: calc(100% - 50px);
-    /* Adjust based on the height of your top bar */
-    /* Your main content styles */
+    font-size: 1.8rem;
+    font-family: var(--main-font);
   }
 
   .nav-container {
