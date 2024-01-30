@@ -26,6 +26,11 @@
     --nav-bar-color-14: #0091dd;
   }
 
+  .highlight-red {
+    color: var(--nav-bar-color-11);
+    /* Example red color */
+  }
+
   .top-bar {
     display: flex;
     justify-content: space-between;
@@ -87,36 +92,6 @@
     /* Delay the start of the animation */
   }
 
-  /* Keyframes for topBarslideInLeft */
-  @keyframes topBarSlideInLeft {
-    from {
-      transform: translateX(-2vw);
-      /* Start position off-screen to the left */
-      opacity: 0;
-    }
-
-    to {
-      transform: translateX(0);
-      /* End position at original location */
-      opacity: 1;
-    }
-  }
-
-  /* Keyframes for topBarslideInRight */
-  @keyframes topBarSlideInRight {
-    from {
-      transform: translateX(2vw);
-      /* Start position off-screen to the right */
-      opacity: 0;
-    }
-
-    to {
-      transform: translateX(0);
-      /* End position at original location */
-      opacity: 1;
-    }
-  }
-
   /* Styles for the navigation bars */
   .nav-container {
     display: flex;
@@ -156,8 +131,27 @@
     padding-top: 5vw;
     padding-left: 1vw;
     min-height: calc(100% - 3vw);
-    font-size: 1.8rem;
+    font-size: 2.4rem;
     font-family: var(--main-font);
+    opacity: 0;
+    animation: bounceIn 0.5s ease-out forwards;
+    animation-delay: 0.5s;
+    width: 56%;
+  }
+
+  .main-content a {
+    color: black;
+    /* Set the default link color to black */
+    text-decoration: underline;
+    /* Remove the underline */
+  }
+
+  /* Styles for links on hover */
+  .main-content a:hover {
+    color: var(--nav-bar-color-11);
+    /* Change color to red on hover */
+    text-decoration: underline;
+    /* Add underline on hover */
   }
 
   .nav-container {
@@ -176,6 +170,84 @@
     /* Starts after half a second */
     z-index: 5;
     font-family: var(--nav-font);
+  }
+
+  /* Keyframes for topBarslideInLeft */
+  @keyframes topBarSlideInLeft {
+    from {
+      transform: translateX(-2vw);
+      /* Start position off-screen to the left */
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      /* End position at original location */
+      opacity: 1;
+    }
+  }
+
+  /* Keyframes for topBarslideInRight */
+  @keyframes topBarSlideInRight {
+    from {
+      transform: translateX(2vw);
+      /* Start position off-screen to the right */
+      opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      /* End position at original location */
+      opacity: 1;
+    }
+  }
+
+  /* @keyframes mainSlideIn {
+    from {
+      transform: translateX(-2vw);
+      /* Start position off-screen to the left */
+  /* opacity: 0;
+    }
+
+    to {
+      transform: translateX(0);
+      /* End position at original location */
+  /* opacity: 1;
+    }
+  }  */
+  @keyframes bounceIn {
+    0% {
+      transform: translateY(-100vh);
+      /* Start below the viewport */
+      opacity: 0;
+    }
+
+    60% {
+      transform: translateY(30px);
+      /* Increase overshoot for more bounce */
+      opacity: 1;
+    }
+
+    75% {
+      transform: translateY(-15px);
+      /* Increase rebound distance */
+    }
+
+    85% {
+      transform: translateY(10px);
+      /* Another bounce back */
+    }
+
+    92% {
+      transform: translateY(-5px);
+      /* And a smaller rebound */
+    }
+
+    100% {
+      transform: translateY(0);
+      /* Finally, settle into the final position */
+      opacity: 1;
+    }
   }
 
   @keyframes slideUp {
@@ -326,25 +398,30 @@
   /* Responsive font sizes and padding */
   @media (max-width: 768px) {
     .top-bar .logo, .top-bar .about {
-      font-size: 1.2rem; /* Slightly smaller font size */
+      font-size: 1.2rem;
+      /* Slightly smaller font size */
     }
 
     .nav-item {
-      font-size: 1.6rem; /* Adjust font size for smaller devices */
+      font-size: 1.6rem;
+      /* Adjust font size for smaller devices */
     }
   }
 
   @media (max-width: 480px) {
     .top-bar {
-      padding: 5px 1%; /* Smaller padding and width adjustment */
+      padding: 5px 1%;
+      /* Smaller padding and width adjustment */
       width: 98%;
     }
 
     .top-bar .logo, .top-bar .about {
-      font-size: 1.0rem; /* Even smaller font size for very small screens */
+      font-size: 1.0rem;
+      /* Even smaller font size for very small screens */
     }
 
     .nav-item {
-      font-size: 1.0rem; /* Further reduced font size */
+      font-size: 1.0rem;
+      /* Further reduced font size */
     }
   }
