@@ -34,7 +34,7 @@
     /* Dark background for the bar */
     color: var(--bar-text-color);
     /* White text color */
-    padding: 10px 20px;
+    padding: 1vh 2vh;
     /* Padding inside the bar */
     position: fixed;
     /* Fixed at the top */
@@ -46,7 +46,7 @@
 
   .top-bar .logo,
   .top-bar .about {
-    font-size: 1.4rem;
+    font-size: 1.8rem;
     /* Larger font size for better visibility */
     text-decoration: none;
     /* Removes underline from links */
@@ -73,8 +73,8 @@
 
   .top-bar .logo:hover,
   .top-bar .about:hover {
-  color: var(--nav-bar-color-11);
-}
+    color: var(--nav-bar-color-11);
+  }
 
   /* Animation for about */
   .top-bar .about {
@@ -90,7 +90,7 @@
   /* Keyframes for topBarslideInLeft */
   @keyframes topBarSlideInLeft {
     from {
-      transform: translateX(-100px);
+      transform: translateX(-2vw);
       /* Start position off-screen to the left */
       opacity: 0;
     }
@@ -105,7 +105,7 @@
   /* Keyframes for topBarslideInRight */
   @keyframes topBarSlideInRight {
     from {
-      transform: translateX(100px);
+      transform: translateX(2vw);
       /* Start position off-screen to the right */
       opacity: 0;
     }
@@ -121,19 +121,30 @@
   .nav-container {
     display: flex;
     flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    /* Adjusted z-index if necessary */
+    z-index: 5;
   }
 
   .nav-item {
-    padding: 10px;
+    padding: 1vh;
+    width: 100%;
     color: black;
     text-decoration: none;
-    font-size: 1.8rem;
+    font-size: 2.6rem;
     transition: padding 0.3s;
     transform: translateX(-100%);
     /* Start off-screen to the left */
     opacity: 0;
     animation: navBarSlideIn 0.5s forwards;
     /* Animation to slide in */
+    box-sizing: border-box;
+    /* Include padding and border in the element's total width and height */
+    /* Center the text */
+    transition: all 0.3s ease;
   }
 
   body, html {
@@ -142,8 +153,8 @@
   }
 
   .main-content {
-    padding-top: 50px;
-    min-height: calc(100% - 50px);
+    padding-top: 1vh;
+    min-height: calc(100% - 1vh);
     font-size: 1.8rem;
     font-family: var(--main-font);
   }
@@ -248,9 +259,9 @@
   .nav-item:hover {
     background-color: black;
     color: white;
-    padding-top: 30px;
+    padding-top: 3vh;
     /* Increase the top padding on hover */
-    padding-bottom: 30px;
+    padding-bottom: 3vh;
     /* Increase the bottom padding on hover */
   }
 
