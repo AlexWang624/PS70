@@ -130,11 +130,11 @@
   }
 
   .nav-item {
-    padding: 0.5vw;
+    padding: 0.5vh;
     width: 100%;
     color: black;
     text-decoration: none;
-    font-size: 2.6rem;
+    font-size: 1.8rem;
     transition: padding 0.3s;
     transform: translateX(-100%);
     /* Start off-screen to the left */
@@ -260,9 +260,9 @@
   .nav-item:hover {
     background-color: black;
     color: white;
-    padding-top: 3vw;
+    padding-top: 3vh;
     /* Increase the top padding on hover */
-    padding-bottom: 3vw;
+    padding-bottom: 3vh;
     /* Increase the bottom padding on hover */
   }
 
@@ -330,7 +330,7 @@
     }
 
     .nav-item {
-      font-size: 1.8rem; /* Adjust font size for smaller devices */
+      font-size: 1.6rem; /* Adjust font size for smaller devices */
     }
   }
 
@@ -341,11 +341,10 @@
     }
 
     .top-bar .logo, .top-bar .about {
-      font-size: 1rem; /* Even smaller font size for very small screens */
+      font-size: 1.0rem; /* Even smaller font size for very small screens */
     }
 
     .nav-item {
-      font-size: 0.8rem; /* Further reduced font size */
-      padding: 12px 0; /* Slightly smaller padding */
+      font-size: 1.0rem; /* Further reduced font size */
     }
   }
