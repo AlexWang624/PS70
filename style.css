@@ -34,7 +34,7 @@
     /* Dark background for the bar */
     color: var(--bar-text-color);
     /* White text color */
-    padding: 1vh 2vh;
+    padding: 1vw 1vw;
     /* Padding inside the bar */
     position: fixed;
     /* Fixed at the top */
@@ -46,7 +46,7 @@
 
   .top-bar .logo,
   .top-bar .about {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     /* Larger font size for better visibility */
     text-decoration: none;
     /* Removes underline from links */
@@ -130,7 +130,7 @@
   }
 
   .nav-item {
-    padding: 1vh;
+    padding: 0.5vw;
     width: 100%;
     color: black;
     text-decoration: none;
@@ -153,8 +153,9 @@
   }
 
   .main-content {
-    padding-top: 1vh;
-    min-height: calc(100% - 1vh);
+    padding-top: 5vw;
+    padding-left: 1vw;
+    min-height: calc(100% - 3vw);
     font-size: 1.8rem;
     font-family: var(--main-font);
   }
@@ -259,9 +260,9 @@
   .nav-item:hover {
     background-color: black;
     color: white;
-    padding-top: 3vh;
+    padding-top: 3vw;
     /* Increase the top padding on hover */
-    padding-bottom: 3vh;
+    padding-bottom: 3vw;
     /* Increase the bottom padding on hover */
   }
 
@@ -320,4 +321,31 @@
 
   .final-project {
     background-color: var(--nav-bar-color-14);
+  }
+
+  /* Responsive font sizes and padding */
+  @media (max-width: 768px) {
+    .top-bar .logo, .top-bar .about {
+      font-size: 1.2rem; /* Slightly smaller font size */
+    }
+
+    .nav-item {
+      font-size: 1.8rem; /* Adjust font size for smaller devices */
+    }
+  }
+
+  @media (max-width: 480px) {
+    .top-bar {
+      padding: 5px 1%; /* Smaller padding and width adjustment */
+      width: 98%;
+    }
+
+    .top-bar .logo, .top-bar .about {
+      font-size: 1rem; /* Even smaller font size for very small screens */
+    }
+
+    .nav-item {
+      font-size: 0.8rem; /* Further reduced font size */
+      padding: 12px 0; /* Slightly smaller padding */
+    }
   }
