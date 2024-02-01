@@ -6,10 +6,10 @@
     --bar-color: white;
     --bar-text-color: black;
     /* --logo-font: "VT323", monospace; */
-    --logo-font: "Helvetica Neue";
-    --about-font: "Helvetica Neue";
-    --main-font: "Helvetica Neue";
-    --nav-font: "Helvetica Neue";
+    --logo-font: 'Noto Sans', sans-serif;
+    --about-font: 'Noto Sans', sans-serif;
+    --main-font: 'Noto Sans', sans-serif;
+    --nav-font: 'Noto Sans', sans-serif;
     --nav-bar-color-1: #abe1f9;
     --nav-bar-color-2: #8779c3;
     --nav-bar-color-3: #da9c37;
@@ -75,6 +75,7 @@
   .top-bar .logo:hover,
   .top-bar .about:hover {
     color: gray;
+    font-style: italic;
   }
 
   /* Animation for about */
@@ -128,7 +129,7 @@
     padding-top: 5vw;
     padding-left: 1vw;
     min-height: calc(100% - 3vw);
-    font-size: 2.2rem;
+    font-size: 2.0rem;
     font-family: var(--main-font);
     opacity: 0;
     animation: bounceIn 0.5s ease-out forwards;
@@ -148,6 +149,7 @@
     color: gray;
     /* Change color to red on hover */
     text-decoration: underline;
+    font-style: italic;
     /* Add underline on hover */
   }
 
