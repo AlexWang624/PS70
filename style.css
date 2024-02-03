@@ -47,7 +47,7 @@
 
   .top-bar .logo,
   .top-bar .about {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     /* Larger font size for better visibility */
     text-decoration: none;
     /* Removes underline from links */
@@ -138,7 +138,7 @@
   }
 
   .about-content a {
-    color: black;
+    color: var(--nav-bar-color-11);
     /* Set the default link color to black */
     text-decoration: underline;
     /* Remove the underline */
@@ -175,7 +175,7 @@
   }
 
   .main-content a {
-    color: black;
+    color: var(--nav-bar-color-11);
     /* Set the default link color to black */
     text-decoration: underline;
     /* Remove the underline */
@@ -199,12 +199,39 @@
   }
 
   .content h1 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
   .content p {
     text-align: left;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
+  }
+
+  .image-container {
+    text-align: center;
+    /* Center align the content */
+    max-width: 80vw;
+    /* Max width of the image container, adjust as needed */
+    margin: auto;
+    /* Center the container on the page */
+  }
+
+  .image-container img {
+    width: 100%;
+    /* Make the image fill the container */
+    height: auto;
+    /* Maintain aspect ratio */
+  }
+
+  .image-container figcaption {
+    margin-top: 0.2vh;
+    /* Space between the image and the caption */
+    color: #666;
+    /* Caption text color, adjust as needed */
+    font-family: var(--main-font);
+    /* Use Noto Sans for the caption */
+    font-size: 0.8rem;
+    /* Caption text size, adjust as needed */
   }
 
   .nav-container {
@@ -450,18 +477,27 @@
   /* Responsive font sizes and padding */
   @media (max-width: 768px) {
     .top-bar .logo, .top-bar .about {
-      font-size: 1.2rem;
+      font-size: 1.0rem;
       /* Slightly smaller font size */
     }
 
     .nav-item {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       /* Adjust font size for smaller devices */
     }
 
     .main-content, .about-content {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       width: 80%;
+    }
+
+    .content h1 {
+      font-size: 1.2rem;
+    }
+
+    .content p {
+      text-align: left;
+      font-size: 1.0rem;
     }
   }
 
@@ -473,7 +509,7 @@
     }
 
     .top-bar .logo, .top-bar .about {
-      font-size: 1.0rem;
+      font-size: 0.8rem;
       /* Even smaller font size for very small screens */
     }
 
@@ -485,5 +521,14 @@
     .main-content, .about-content {
       font-size: 1.2rem;
       width: 80%;
+    }
+
+    .content h1 {
+      font-size: 1.0rem;
+    }
+
+    .content p {
+      text-align: left;
+      font-size: 0.8rem;
     }
   }
