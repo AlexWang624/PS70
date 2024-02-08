@@ -199,12 +199,18 @@
   }
 
   .content h1 {
-    font-size: 1.4rem;
+    text-align: left;
+    font-size: 1.2rem;
+  }
+
+  .content h2 {
+    text-align: left;
+    font-size: 1.2rem;
   }
 
   .content p {
     text-align: left;
-    font-size: 1.2rem;
+    font-size: 1.0rem;
   }
 
   .image-container {
@@ -217,6 +223,7 @@
   }
 
   .image-container img {
+    display: inline-block;
     width: 100%;
     /* Make the image fill the container */
     height: auto;
@@ -224,7 +231,8 @@
   }
 
   .image-container figcaption {
-    margin-top: 0.2vh;
+    margin-top: -0.1vh;
+    margin-bottom: 0.1vh;
     /* Space between the image and the caption */
     color: #666;
     /* Caption text color, adjust as needed */
@@ -487,17 +495,23 @@
     }
 
     .main-content, .about-content {
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       width: 80%;
     }
 
     .content h1 {
-      font-size: 1.2rem;
+      text-align: left;
+      font-size: 1.0rem;
+    }
+
+    .content h2 {
+      text-align: left;
+      font-size: 1.0rem;
     }
 
     .content p {
       text-align: left;
-      font-size: 1.0rem;
+      font-size: 0.8rem;
     }
   }
 
@@ -524,11 +538,17 @@
     }
 
     .content h1 {
-      font-size: 1.0rem;
+      text-align: left;
+      font-size: 0.8rem;
+    }
+
+    .content h2 {
+      text-align: left;
+      font-size: 0.8rem;
     }
 
     .content p {
       text-align: left;
-      font-size: 0.8rem;
+      font-size: 0.6rem;
     }
   }
