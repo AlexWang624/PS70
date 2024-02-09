@@ -129,7 +129,7 @@
     padding-top: 5vw;
     padding-left: 1vw;
     min-height: calc(100% - 3vw);
-    font-size: 2.0rem;
+    font-size: 1.4rem;
     font-family: var(--main-font);
     opacity: 0;
     animation: bounceIn 0.5s ease-out forwards;
@@ -208,9 +208,43 @@
     font-size: 1.2rem;
   }
 
+  .content h3 {
+    text-align: center;
+    font-size: 1.0rem;
+  }
+
   .content p {
     text-align: left;
     font-size: 1.0rem;
+  }
+
+  .image-container-about {
+    text-align: left;
+    /* Center align the content */
+    max-width: 80vw;
+    /* Max width of the image container, adjust as needed */
+    margin: auto;
+    /* Center the container on the page */
+  }
+
+  .image-container-about img {
+    display: inline-block;
+    width: 100%;
+    /* Make the image fill the container */
+    height: auto;
+    /* Maintain aspect ratio */
+  }
+
+  .image-container-about figcaption {
+    margin-top: -0.1vh;
+    margin-bottom: 0.1vh;
+    /* Space between the image and the caption */
+    color: #666;
+    /* Caption text color, adjust as needed */
+    font-family: var(--main-font);
+    /* Use Noto Sans for the caption */
+    font-size: 0.8rem;
+    /* Caption text size, adjust as needed */
   }
 
   .image-container {
@@ -509,7 +543,7 @@
       font-size: 1.0rem;
     }
 
-    .content p {
+    .content p, .content h3 {
       text-align: left;
       font-size: 0.8rem;
     }
@@ -533,7 +567,7 @@
     }
 
     .main-content, .about-content {
-      font-size: 1.2rem;
+      font-size: 1.0rem;
       width: 80%;
     }
 
@@ -547,7 +581,7 @@
       font-size: 0.8rem;
     }
 
-    .content p {
+    .content p, .content h3 {
       text-align: left;
       font-size: 0.6rem;
     }
