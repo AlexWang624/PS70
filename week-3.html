@@ -27,12 +27,133 @@
   </div>
 
   <div class="main-content">
-    <p><span>&#8674;</span> Week 3: Hand Tools and Fabrication</p>
-  </div>
+    <p><span>&#8674;</span> Week 3: Kinetic Sculpture</p>
 
-  <!-- Navigation Bars -->
+    <div class="content">
+      <h3>02/15/2024</h3>
+      <h2><a href="./week-3/week-3_cad-files.zip"><span>&#8674;</span> Click Here to Download CAD Files</a></h2>
+      <h1> Assignment: Kinetic Sculpture</h1>
+      <p><strong>Inspirations</strong></p>
+      <p>I wanted to create a minimal, metallic kinetic sculpture as a very rough prototype for my final project. The visual inspirations for this assignment include kinetic sculptures by Anne Lilly, Jean Besson, and Pedro S. De Movellan:</p>
+      <figure class="image-container">
+        <img src="./week-3/anne-lilly-sculpture.jpeg" style="height:30vh; width:auto" alt="Anne Lilly Sculpture" />
+        <img src="./week-3/jean-besson-sculpture.jpeg" style="height:30vh; width:auto" alt="Jean Besson Sculpture" />
+        <img src="./week-3/pedro-s-de-movellan-sculpture.jpeg" style="height:30vh; width:auto" alt="Pedro S. De Movellan Sculpture" />
+        <figcaption>Visual Inspirations</figcaption>
+      </figure>
+      <p>I like the circles in these sculptures that create a mesmerizing motion, and I wanted to make a similar sculpture.</p>
+      </br>
+      <p><strong>Materials:</strong></p>
+      <p>1.Nema 17 42mm × 42mm Stepper Motor</p>
+      <p>2. 5mm to 8mm NEMA 17 Shaft Coupler</p>
+      <p>3. 1/16 Stainless Steel Wire Rope</p>
+      <p>4. 10 Inch Metal Loops</p>
+      <p>5. 3mm × 250mm Stainless Steel Solid Round Rods</p>
+      <p>6. A4988 Stepper Motor Driver Module</p>
+      <p>7. Arduino Uno</p>
+      <p>8. 12V 2A AC to DC Power Supply</p>
+      <p>9. 8mm × 290mm Metric Acme Lead Screw</p>
+      </br>
+      <p><strong>Process:</strong></p>
+      <p><strong>1. Attach Metal Loops to Steel Round Rods and Lead Screw</strong></p>
+      <p>My making process was very spontaneous. I did not draw a design plan and I started with experimenting with shapes and forms that were possible to make with the materials I had (being spontaneous was not a good idea because I had a lot of
+        issues of keeping the sculpture balanace later in the process; I will never do this again).</p>
+      <p>The first problem that I encountered was: how to attach the loops to the rods and lead screw? I did not know how to 3D print customized components, and glue was not effective in terms of stickness and freedom of changes in shapes.</p>
+      <figure class="image-container">
+        <img src="./week-3/attachment-problem.jpg" style="width:40%" alt="Attachment Problem" />
+        <figcaption>Attachment Problem</figcaption>
+      </figure>
+      <p>Then I thought about <a
+          href="https://www.google.com/search?sca_esv=22a29e68260e2c90&rlz=1C5CHFA_enUS868US869&hl=en&sxsrf=ACQVn0_nG9Yf5AMn_tTPZcMfPPABBHBOpg:1708068628447&q=wire+sculpture&tbm=isch&source=lnms&sa=X&ved=2ahUKEwjhz-a-q6-EAxWekYkEHatHCasQ0pQJegQIChAB&biw=1440&bih=779&dpr=2"
+          target="_blank">wire sculptures</a> - maybe I could try to tie them toghether by wraping wires around them. And it worked pretty well! The hoops were attached to a central lead screw, with round rods as supporting structures.</p>
+      <figure class="image-container">
+        <img src="./week-3/wraping-wires_01.jpg" style="width:30%" alt="Wraping Wires 01" />
+        <img src="./week-3/wraping-wires_02.jpg" style="width:30%" alt="Wraping Wires 02" />
+        <img src="./week-3/wraping-wires_03.jpg" style="width:30%" alt="Wraping Wires 03" />
+        <figcaption>Wraping Wires</figcaption>
+      </figure>
+      <p>And I had this first iteration of my sculpture:</p>
+      <figure class="image-container">
+        <img src="./week-3/iteration_01.jpg" style="width:40%" alt="First Iteration" />
+        <figcaption>First Iteration</figcaption>
+      </figure>
+      <p>However, then I found that I forgot to take down the motor mount plate that was left on the motor from the last time I used it. After I took the plate down, the structure became inbalance, and it kept falling to the side.</p>
+      <p>So I broke apart the sculpture and re-assembled it into a simpler structure:</p>
+      <figure class="image-container">
+        <img src="./week-3/iteration_02.jpg" style="width:40%" alt="Second Iteration" />
+        <figcaption>Second Iteration</figcaption>
+      </figure>
+      <p>It looks like a fast process now, but I actually spent an hour or two on building these structures. After I made the first iteration, I tried to wrap thinner wires between the horizontal loop and the vertical ones to create some visual
+        illusion effects. Somehow I forgot to take photos for this process, and I got rid of the thinner wires after I noticed the imbalance issue from taking down the motor mount plate. So the whole process was much more chaotic than these photo
+        documentaions.</p>
+      <p><strong>2. Connect the Motor to Arduino</strong></p>
+      <p>The circuitry work went smoothly. Watching a tutorial (<a href="https://www.youtube.com/watch?v=a0gIC27nBlE" target="blank">A4988 Driver with Nema17 Stepper Motor</a>), I connected the motor to an A4988 driver module and then to Arduino Uno
+        and the power supply.</p>
+      <figure class="image-container">
+        <img src="./week-3/circuit-connection_01.jpg" style="width:30%" alt="Circuit Connection 01" />
+        <img src="./week-3/circuit-connection_02.jpg" style="width:30%" alt="Circuit Connection 02" />
+        <figcaption>Circuit Connection</figcaption>
+      </figure>
+      <p>And then I wrote the code for Arduino:</p>
+      <figure class="image-container">
+        <img src="./week-3/arduino-code.png" style="width:80%" alt="Arduino Code" />
+        <figcaption>Arduino Code</figcaption>
+      </figure>
+      </br>
+      <p><strong>3. Make a Base for the Sculpture</strong></p>
+      <p>Then I wanted to make a base that can not only act as a storage to the circuit and motor, but also provide actual balace to the scultpure. Here is a rough sketch I drew for how I envioned the base could be:</p>
+      <figure class="image-container">
+        <img src="./week-3/sketch.jpg" style="width:60%" alt="Sketch" />
+        <figcaption>Sketch</figcaption>
+      <p>After measuring the dimensions of components in the circuit and the motor, I designed a box in Fusion 360:</p>
+      <figure class="image-container">
+        <img src="./week-3/box-design.png" style="width:80%" alt="Box Design in Fusion 360" />
+        <figcaption>Box Design in Fusion 360</figcaption>
+      </figure>
+      <p>And I laser cut it:</p>
+      <figure class="image-container">
+        <img src="./week-3/laser-cutting.jpg" style="width:40%" alt="Laser Cutting" />
+        <figcaption>Laser Cutting</figcaption>
+      </figure>
+      <p>The box has two openings on two sides for the Arduino and power supply cords:</p>
+      <figure class="image-container">
+        <img src="./week-3/folded-box_01.jpg" style="width:30%" alt="Folded Box 01" />
+        <img src="./week-3/folded-box_02.jpg" style="width:30%" alt="Folded Box 02" />
+        <img src="./week-3/folded-box_03.jpg" style="width:30%" alt="Folded Box 03" />
+        <figcaption>Folded Box</figcaption>
+      </figure>
+      <p>And it also has a lid with an opening for the motor:</p>
+      <figure class="image-container">
+        <img src="./week-3/base_01.jpg" style="width:40%" alt="Base 01" />
+        <img src="./week-3/base_02.jpg" style="width:40%" alt="Base 02" />
+        <img src="./week-3/base_03.jpg" style="width:40%" alt="Base 03" />
+        <img src="./week-3/base_04.jpg" style="width:40%" alt="Base 04" />
+        <img src="./week-3/circuit-in-box.jpg" style="width:80%" alt="Circuit in Box" />
+        <figcaption>Base</figcaption>
+      </figure>
+      <p>There were two failed attempts to make this box. One was too small, and the other does not have fingers along the edges so it was difficult to fold it into a box.</p>
+      <figure class="image-container">
+        <img src="./week-3/box-failure.jpg" style="width:40%" alt="Failed Attempts" />
+        <figcaption>Failed Attempts</figcaption>
+      </figure>
+      </br>
+      <p><strong>Final Outcome</strong></p>
+      <figure class="image-container">
+        <img src="./week-3/final-outcome.jpg" style="width:40%" alt="Final Outcome" />
+        <figcaption>Final Outcome</figcaption>
+      </figure>
+      <p></p>
+      <video width="100%" height=auto controls>
+        <source src="./week-3/final-outcome.mp4" type="video/mp4">
+      </video>
+      </br>
+      <p><strong>Future Improvements</strong></p>
+      <p>As you can see in the video, there was still a balance problem with the current sculpture strucutre. Also, the current motion needs more variations. These are all improvements that could be made with more time.</p>
+      </br>
+      </br>
+    </div>
 
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
