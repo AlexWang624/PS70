@@ -294,6 +294,26 @@
     font-family: var(--nav-font);
   }
 
+  pre {
+    background-color: #F0F0F0;
+    border: 0.1em solid #ddd;
+    page-break-inside: avoid;
+    font-family: monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin-bottom: 1.6em;
+    max-width: 100%;
+    overflow: auto;
+    padding: 1em 1em 1em 1em;
+    display: block;
+    word-wrap: break-word;
+    text-align: left;
+    border-radius: 1% 1%;
+  }
+  .comment {
+    color:#ee58ae;
+  }
+
   /* Keyframes for topBarslideInLeft */
   @keyframes topBarSlideInLeft {
     from {
@@ -547,6 +567,10 @@
       text-align: left;
       font-size: 0.8rem;
     }
+
+    pre {
+      font-size: 0.6rem;
+    }
   }
 
   @media (max-width: 480px) {
@@ -584,5 +608,9 @@
     .content p, .content h3 {
       text-align: left;
       font-size: 0.6rem;
+    }
+
+    pre {
+      font-size: 0.4rem;
     }
   }

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PS70: Introduction to Digital Fabrication</title>
+  <title>Week 4: Microcontroller Programming</title>
   <link href="./style.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,11 +28,77 @@
 
   <div class="main-content">
     <p><span>&#8674;</span> Week 4: Microcontroller Programming</p>
-  </div>
 
-  <!-- Navigation Bars -->
+    <div class="content">
+      <h3>02/22/2024</h3>
+      <h1>Ultrasonic-Sensor-Controlled LEDs</h1>
+      <p><strong>Inspirations:</strong></p>
+      <p>I was inspired by <a href="https://bililun.github.io/PHYSCI-70/04_micro/index.html">PK's LEDs + Potentiometer</a>, and I wanted to program an ulstraonic sensor that controlls the number of turned-on LEDs. The sensor can detect the distance
+        to users' hands: the larger the distance, the more LEDs are turned on, and vice versa.</p>
+      </br>
+      <p><strong>Circuit Connection:</strong></p>
+      <figure class="image-container">
+        <img src="./week-4/wiring.jpg" style="width:80%" alt="Wiring" />
+        <figcaption>Wiring</figcaption>
+      </figure>
+      </br>
+      <p><strong>Arduino Code:</strong></p>
+      <pre>
+      <code>
+        <span class="comment">// Define pin numbers</span>
+        const int trigPin = 9;
+        const int echoPin = 10;
+        <span class="comment">// Define LED pins</span>
+        const int ledPins[] = {2, 3, 4, 5, 6};
+        const int numLeds = sizeof(ledPins) / sizeof(ledPins[0]);
 
-  <script src="script.js"></script>
+        void setup() {
+          <span class="comment">// Initialize serial communication</span>
+          Serial.begin(9600);
+          <span class="comment">// Define sensor pins</span>
+          pinMode(trigPin, OUTPUT);
+          pinMode(echoPin, INPUT);
+          <span class="comment">// Initialize LED pins</span>
+          for (int i = 0; i < numLeds; i++) {
+            pinMode(ledPins[i], OUTPUT);
+          }
+        }
+
+      void loop() {
+        <span class="comment">// Clear the trigPin</span>
+        digitalWrite(trigPin, LOW);
+        delayMicroseconds(2);
+        <span class="comment">// Set the trigPin high for 10 microseconds</span>
+        digitalWrite(trigPin, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(trigPin, LOW);
+        <span class="comment">// Read the echoPin and calculate the distance</span>
+        long duration=pulseIn(echoPin, HIGH);
+        long distance=duration * 0.034 / 2; <span class="comment">// Speed of sound wave divided by 2 (go and back)</span>
+        Serial.println(distance);
+
+        <span class="comment">// Control LEDs based on distance</span>
+        for (int i=0; i < numLeds; i++) {
+          if (distance> (i + 1) * 4) { <span class="comment">// Adjust the multiplication factor as needed</span>
+            digitalWrite(ledPins[i], HIGH);
+          } else {
+            digitalWrite(ledPins[i], LOW);
+          }
+        }
+
+        delay(100); <span class="comment">// Delay a bit to avoid spamming</span>
+          }:"</code>
+        </pre>
+      </br>
+      <p><strong>Final Outcome:</strong></p>
+      <video width="100%" height=auto controls>
+        <source src="./week-4/final-outcome.mp4" type="video/mp4">
+      </video>
+      </br>
+      </br>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 
 </html>
