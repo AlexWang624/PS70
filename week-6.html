@@ -30,16 +30,62 @@
     <p><span>&#8674;</span> Week 6: Electronic Input Devices</p>
 
     <div class="content">
-      <p><strong>Sorry :^( Will update process and details soon! Was having a very intense week</strong></p>
-    </br>
-    <p><strong>Idea:</strong></p>
-    <p>I made a flex sensor with velostat and conductive tape.</p>
-  </br>
+      <h3>03/07/2024</h3>
+      <h2><a href="./week-5/week-6_arduino-file.zip"><span>&#8674;</span> Click Here to Download the Arduino File</a></h2>
+      <h1>Bend Sensor</h1>
+      <p><strong>Idea:</strong></p>
+      <p>I made a bend sensor with velostat and conductive tape that the resistace reduces when squeezed.</p>
+      </br>
       <p><strong>Materials:</strong></p>
+      <p>1. Velostat</p>
+      <p>2. Conductive Tape</p>
+      <p>1. Paper Tape</p>
+      <p>2. Jumper Wires</p>
       <figure class="image-container">
         <img src="./week-6/materials.jpg" style="width:40%" alt="Materials" />
         <figcaption>Materials</figcaption>
       </figure>
+      </br>
+      <p><strong>Code:</strong></p>
+      <pre>
+      <code>
+        <span class="comment">// Define pin numbers</span>
+        const int trigPin = 9;
+        const int echoPin = 10;
+        <span class="comment">// Define LED pins</span>
+        const int ledPins[] = {2, 3, 4, 5, 6};
+        const int numLeds = sizeof(ledPins) / sizeof(ledPins[0]);
+
+        void setup() {
+        <span class="comment">// Initialize serial communication</span>
+        Serial.begin(9600);
+        <span class="comment">// Define sensor pins</span>
+        pinMode(trigPin, OUTPUT);
+        pinMode(echoPin, INPUT);
+        <span class="comment">// Initialize LED pins</span>
+        for (int i = 0; i < numLeds; i++) { pinMode(ledPins[i], OUTPUT); } } void loop() { <span class="comment">// Clear the trigPin</span>
+          digitalWrite(trigPin, LOW);
+          delayMicroseconds(2);
+          <span class="comment">// Set the trigPin high for 10 microseconds</span>
+          digitalWrite(trigPin, HIGH);
+          delayMicroseconds(10);
+          digitalWrite(trigPin, LOW);
+          <span class="comment">// Read the echoPin and calculate the distance</span>
+          long duration=pulseIn(echoPin, HIGH);
+          long distance=duration * 0.034 / 2; <span class="comment">// Speed of sound wave divided by 2 (go and back)</span>
+          Serial.println(distance);
+
+          <span class="comment">// Control LEDs based on distance</span>
+          for (int i=0; i < numLeds; i++) { if (distance> (i + 1) * 4) { <span class="comment">// Adjust the multiplication factor as needed</span>
+            digitalWrite(ledPins[i], HIGH);
+            } else {
+            digitalWrite(ledPins[i], LOW);
+            }
+            }
+
+            delay(100); <span class="comment">// Delay a bit to avoid spamming</span>
+            }:"</code>
+      </pre>
     </br>
       <p><strong>Final Outcome:</strong></p>
       <video width="100%" height=auto controls>
