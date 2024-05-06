@@ -31,7 +31,7 @@
 
     <div class="content">
       <h3>04/04/2024</h3>
-      <h2><a href="./week-3/week-9_assignment-files.zip"><span>&#8674;</span> Click Here to Download Assignment Files</a></h2>
+      <h2><a href="./week-9/week-9_assignment-files.zip"><span>&#8674;</span> Click Here to Download Assignment Files</a></h2>
       <h1> Assignment: Schedule Display</h1>
       <p> Partner: <a href="https://chjxiong.github.io/ps70/wk9.html" target="_blank">Chenjie Xiong</a>
       <p>
@@ -44,7 +44,8 @@
       <p>1. <a href="https://randomnerdtutorials.com/esp32-esp8266-i2c-lcd-arduino-ide/" target="_blank">How to Use I2C LCD with ESP32 on Arduino IDE (ESP8266 compatible)</a></p>
       <p>2. <a href="https://www.youtube.com/watch?v=B10HWeXouIg&t=399s" target="_blank">How to get Realtime Data from Firebase to your Web Application</a></p>
       <p>3. <a href="https://www.youtube.com/watch?v=COssWn4Pcm4" target="_blank">Using LCD1602 or LCD2004 with ESP32</a></p>
-      <p>4. <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/" target="_blank">ESP32: Getting Started with Firebase (Realtime Database)</a><p>
+      <p>4. <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/" target="_blank">ESP32: Getting Started with Firebase (Realtime Database)</a>
+      <p>
       <p>And thank you to Kassia, Bobby, and Nathan for helping us debug!</p>
       </br>
       <p><strong>Materials:</strong></p>
@@ -66,13 +67,235 @@
         <img src="./week-9/circuit-simulation.png" style="width:80%" alt="Circuit Simulation" />
         <figcaption>Circuit Simulation</figcaption>
       </figure>
-    </br>
-    <p><strong>2. Firebase Setup</strong></p>
-    <p>Following this <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/" target="_blank">tutorial</a>, we set up the Firebase project:</p>
-    <figure class="image-container">
-      <img src="./week-9/firebase.png" style="width:80%" alt="Firebase" />
-      <figcaption>Firebase</figcaption>
-    </figure>
+      </br>
+      <p><strong>2. Firebase Setup</strong></p>
+      <p>Following this <a href="https://randomnerdtutorials.com/esp32-firebase-realtime-database/" target="_blank">tutorial</a>, we set up the Firebase project:</p>
+      <figure class="image-container">
+        <img src="./week-9/firebase.png" style="width:80%" alt="Firebase" />
+        <figcaption>Firebase</figcaption>
+      </figure>
+      </br>
+      <p><strong>3. Arduino Code</strong></p>
+      <pre>
+  <code>
+    <span class="comment">//Library</span>
+    #include <WiFi.h>
+    #include <Firebase_ESP_Client.h>
+    #include <Arduino.h>
+    #include <LiquidCrystal_I2C.h>
+    <span class="comment">// Provide the token generation process info</span>
+    #include "addons/TokenHelper.h"
+    <span class="comment">//Provide the RTDB payload printing info and other helper functions.</span>
+    #include "addons/RTDBHelper.h"
+
+    #define DATABASE_URL "https://ps70-assignment-9-default-rtdb.firebaseio.com/"
+    #define API_KEY "AIzaSyDQLa0yHfCj-yF4qb3oo5hCBFqBPJmPdmw"
+
+    #define WIFI_SSID "MAKERSPACE"
+    #define WIFI_PASSWORD "12345678"
+    unsigned long sendDataPrevMillis = 0;
+    int count = 0;
+    bool signupOK = false;
+    unsigned long prevMillis = 0;
+    const long interval = 5000; <span class="comment">// Check every 5 seconds</span>
+
+    <span class="comment">// Define Firebase Data object</span>
+    FirebaseData fbdo;
+
+    FirebaseAuth auth;
+    FirebaseConfig config;
+
+    <span class="comment">// set the LCD number of columns and rows</span>
+    int lcdColumns = 16;
+    int lcdRows = 2;
+
+    <span class="comment">// set LCD address, number of columns and rows</span>
+    <span class="comment">// if you don't know your display address, run an I2C scanner sketch</span>
+    LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
+
+    void setup() {
+      Serial.begin(115200);
+      WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+      Serial.print("Connecting to Wi-Fi");
+      while (WiFi.status() != WL_CONNECTED){
+        Serial.print(".");
+        delay(300);
+      }
+      Serial.println();
+      Serial.print("Connected with IP: ");
+      Serial.println(WiFi.localIP());
+      Serial.println();
+
+    <span class="comment">/* Assign the API key (required) */</span>
+    config.api_key = API_KEY;
+
+    <span class="comment">/* Assign the RTDB URL (required) */</span>
+    config.database_url = DATABASE_URL;
+
+    <span class="comment">/* Sign up */</span>
+    if (Firebase.signUp(&config, &auth, "", "")){
+      Serial.println("OK");
+      signupOK = true;
+    }
+    else{
+      Serial.printf("%s\n", config.signer.signupError.message.c_str());
+    }
+
+    <span class="comment">/* Assign the callback function for the long running token generation task */</span>
+    config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+
+    Firebase.begin(&config, &auth);
+    Firebase.reconnectWiFi(true);
+    <span class="comment">// put your setup code here, to run once:</span>
+    if (!Firebase.RTDB.beginStream(&fbdo, "/events"))
+    {
+      Serial.println(fbdo.errorReason());
+    }
+
+
+    <span class="comment">// initialize LCD</span>
+    lcd.init();
+    <span class="comment">// turn on LCD backlight</span>
+    lcd.backlight();
+  }
+
+  void loop() {
+    <span class="comment">// put your main code here, to run repeatedly:</span>
+    if (!Firebase.RTDB.readStream(&fbdo))
+    {
+      Serial.println(fbdo.errorReason());
+    }
+
+    if (fbdo.streamTimeout())
+    {
+      Serial.println("Stream timeout, resume streaming...");
+      Serial.println();
+    }
+
+    if (fbdo.streamAvailable())
+    {
+      if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_integer)
+        Serial.println(fbdo.to());
+        else if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_float)
+        Serial.println(fbdo.to(), 5);
+        else if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_double)
+        printf("%.9lf\n", fbdo.to());
+        else if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_boolean)
+        Serial.println(fbdo.to() ? "true" : "false");
+        else if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_string)
+        Serial.println(fbdo.to());
+        else if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_json)
+        {
+          Serial.println("in the json for loop");
+          FirebaseJson *json = fbdo.to();
+          Serial.println(json->raw());
+          FirebaseJsonData event;
+          json->get(event, "event");
+          Serial.println(event.to());
+          FirebaseJsonData date;
+          json->get(date, "date");
+          Serial.println(date.to());
+
+          lcd.setCursor(0, 0);
+          <span class="comment">// print message</span>
+          lcd.print(date.to());
+          delay(1000);
+          <span class="comment">// clears the display to print new message</span>
+
+          <span class="comment">// set cursor to first column, second row</span>
+          lcd.setCursor(0,1);
+          lcd.print(event.to());
+          delay(3000);
+          lcd.clear();
+        }
+        else if (fbdo.dataTypeEnum() == firebase_rtdb_data_type_array)
+        {
+          FirebaseJsonArray *arr = fbdo.to();
+          Serial.println(arr->raw());
+        }
+      }
+  </code>
+    </pre>
+  </br>
+      <p><strong>4. Website</strong></p>
+      <p>Here is the <a href="https://chjxiong.github.io/ps70/Source/WK9/website.html" target="_blank">website</a>, the interface where users can input their schedules:</p>
+      <pre>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Event Input Form</title>
+    </head>
+    <body>
+      <h1>Event Input Form</h1>
+      <form id="eventForm">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br><br>
+        <label for="event">Event:</label>
+        <input type="text" id="event" name="event" required><br><br>
+        <button type="submit">Submit</button>
+      </form>
+
+      <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-database.js"></script>
+
+      <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDQLa0yHfCj-yF4qb3oo5hCBFqBPJmPdmw",
+            authDomain: "ps70-assignment-9.firebaseapp.com",
+            databaseURL: "https://ps70-assignment-9-default-rtdb.firebaseio.com",
+            projectId: "ps70-assignment-9",
+            storageBucket: "ps70-assignment-9.appspot.com",
+            messagingSenderId: "615712637717",
+            appId: "1:615712637717:web:b5806df75154bc40f01f1c",
+            measurementId: "G-5JTDL6XQXR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        // Get a reference to the database service
+        const database = firebase.database();
+
+        document.getElementById("eventForm").addEventListener("submit", function(event) {
+          event.preventDefault();
+
+          const dateInput = document.getElementById("date").value;
+          const eventInput = document.getElementById("event").value;
+
+          // Create a new Date object from the input value
+          const eventDate = new Date(dateInput);
+
+          // Check if the date is valid
+          if (!isNaN(eventDate.getTime())) {
+            // Format the date as "Day, Month, Year"
+            const formattedDate = eventDate.toLocaleDateString('en-US', {
+              day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            // Store the formatted date and event description in Firebase
+            database.ref('events').push({
+              date: formattedDate,
+              event: eventInput
+            });
+
+            // Clear the form after submission
+            document.getElementById("eventForm").reset();
+          } else {
+            console.error("Invalid date input");
+          }
+        });
+      </script>
+    </body>
+    </html>
+</pre>
+</br>
+      <p><strong>Final Outcome:</p></strong>
+      <p>Linking the Arduino and the website through Firebase, we got a display that showed schedules once the user uploaded them through the website:</p>
+      <video width="100%" height=auto controls>
+        <source src="./week-9/final-outcome.mp4" type="video/mp4">
+      </video>
     </div>
     </br>
     </br>
