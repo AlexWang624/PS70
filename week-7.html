@@ -29,6 +29,109 @@
   <div class="main-content">
     <h3>03/22/2024</h3>
     <p><span>&#8674;</span> Week 7: MVP</p>
+    <div class="content">
+      <h3>03/21/2024</h3>
+      <h1>Assignment: Minimum Viable Product: Make a serious attempt at the most challenging/intimidating aspect of your final project.</h1>
+      <p><strong>Idea:</strong></p>
+      <p>For my final project, I aim for making an interactive storytelling game with Tarot cards as story prompts. It will be powered by a fine-tuned GPT model so that the plotline fo the story is not predictable even by the creator (me!). So for my
+        MVP, I was brainstorming for possible shapes
+        of the physical game console and the game mechanism. I also worked on getting a LCD screen to work, which is the most crucial physical interface for this project.</p>
+      </br>
+      <p><strong>Game Console Inspirations:</strong></p>
+      <p>I found some existing portable products as visual inspirations for the enclosure of my project:</p>
+      <figure class="image-container">
+        <img src="./week-7/visual-inspirations.png" style="width:100%" alt="Visual Inspirations" />
+        <figcaption>Visual Inspirations</figcaption>
+        <p></p>
+        <p>I really liked how these projects have minimal rectangular enclosures that look so clean, and I also like the mechanical-primitive lookings of 当代问题驱动器 (translation:"Contemporary Problems Drive"), 问题驱动器 (translation: Contemporary Problems
+          Driver), and pocket operator that expose the board, so I will try to incoporate this feature into my design.</p>
+        </br>
+        <p><strong>Technical References:</strong></p>
+        <p>I also searched for some technical references that might be useful for my project development, primarily on how to control the display with microcontrollers:</p>
+        <figure class="image-container">
+          <img src="./week-7/technical-reference.png" style="width:80%" alt="Technical References" />
+          <figcaption>Technical References</figcaption>
+          </br>
+          <p><strong>Rough Sketch:</p></strong>
+          <p>Based on these research, I drew a rough sketch on what I envisioned my project would look like with an approximate dimension:</p>
+          <figure class="image-container">
+            <img src="./week-7/rough-sketch.png" style="width:80%" alt="Rough Sketch" />
+            <figcaption>Rough Sketch</figcaption>
+          </figure>
+          </br>
+          <p><strong>LCD Screen Connection:</p></strong>
+          <p>I fell short on the actual physical development because I spent too much time figuring out the game mechanism, but I got to testing out connecting a LCD screen to ESP32:</p>
+          <figure class="image-container">
+            <img src="./week-7/lcd-screen.jpg" style="width:60%" alt="LCD Screen Test" />
+            <figcaption>LCD Screen Test</figcaption>
+            </br>
+            <p><strong>GPT Model Fine Tune:</strong></p>
+            <p>On the other side, I had a great progress in fine-tuning a customized GPT model for writing mysterious stories based on Tarot Cards!</p>
+            <p>I first generated and gathered some stories written based on visual symbols and interpretations in 22 major arcanas in a Tarot card set as input data for tuning my model, and here is one of them as an example formatted as a JSONL string:</p>
+            <figure class="image-container">
+              <img src="./week-7/story-example.png" style="width:80%" alt="Story Data Example" />
+              <figcaption>Story Data Example</figcaption>
+              <p>To clarify the role of the customized GPT model, I needed to "tell" what character it will be and what kind of stories it will generate. The role that I crafted is: “You are a creative novelist. You write experimental psychological
+                thrillers that are based on the Major Arcana Tarot cards with horror and supernatural elements. Your stories have unexpected plot twists that keep the audience engaged and the settings of the stories are culturally ambiguous.” You can
+                also see me setting up its role in my screenshots above and below.</p>
+              <p>And here is a screenshot of the complete JSONL file with 42 such strings for fine-tuning:</p>
+              <figure class="image-container">
+                <img src="./week-7/jsonl-file.png" style="width:80%" alt="JSONL File" />
+                <figcaption>JSONL File</figcaption>
+                <p>Then I uploaded my training file into OpenAI for creating my model using the following code:</p>
+                <pre>
+<code>
+  const OpenAI = require('openai').OpenAI;
+  const openai = new OpenAI({
+      apiKey: "###" <span class="comment">// Hide my API key</span>
+  })
+  const fs = require('fs');
+
+  let id = "file-uJRlzyHQy4y2zh9jslaDtS35";
+
+  async function upload() {
+      const file = await openai.files.create({
+         file: fs.createReadStream('./training.jsonl'),
+         purpose: 'fine-tune'
+      })
+
+      console.log(file)
+  }
+
+  upload();
+
+  async function fineTune(){
+      const finetune = await openai.fineTuning.jobs.create({
+          training_file: id,
+          model: 'gpt-3.5-turbo'
+      })
+
+      console.log(finetune)
+  }
+
+  fineTune();
+
+  async function main() {
+      const fineTune = await openai.fineTuning.jobs.listEvents("ftjob-WZ2lkhX1yafXbHg0uIStqXfR");
+      console.log(fineTune);
+  }
+
+  main();
+</code>
+</pre>
+                <p>Then I got a customized GPT 3.5 turbo model ready to use!</p>
+                <figure class="image-container">
+                  <img src="./week-7/gpt-model.png" style="width:60%" alt="GPT Model Ready" />
+                  <figcaption>GPT Model Ready</figcaption>
+                  </br>
+                  <p><strong>Future Steps:</strong></p>
+                  <p>In the following weeks, I will work on:</p>
+                  <p>1. Figuring out the mechanism for interacting with this GPT model and designing ann enclosure for this project;</p>
+                  <p>2. Working out ESP32 connections with OLED and TFT screens, which were recommended by Nathan for my project;</p>
+                  <p>3. Connecting ESP32 to Firebase, and then to my GPT model so that my project can generate stories in real time.</p>
+                  </br>
+                  </br>
+    </div>
   </div>
 
   <!-- Navigation Bars -->

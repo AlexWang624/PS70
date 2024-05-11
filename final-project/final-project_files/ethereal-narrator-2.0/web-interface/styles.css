@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
+
+* {
+    font-family: 'Silkscreen', sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tarot-cards {
+    width: 54%;
+}
+
+.response-container {
+    width: 48%;
+}
+
+
+.onClickTextOverImage {
+    width: 6.3vw;
+    height: 11.2vw;
+    background-size: cover;
+    display: inline-block;
+    margin: 12px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    position: relative;
+    border-radius: 4px;
+    transform-origin: center;
+    filter: grayscale(100%);
+    transition: transform .3s, filter .3s, box-shadow .3s;
+    font-size:10px;
+}
+
+.onClickTextOverImage div {
+    position: absolute;
+    color: #fff;
+    padding: 8px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding-top: 75%;
+    text-align: center;
+    opacity: 0;
+    transition: .3s;
+}
+
+.onClickTextOverImage:hover div {
+    opacity: 1;
+    padding-top: 80%;
+}
+
+.onClickTextOverImage.show {
+    transform: scale(1.2);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+    filter: grayscale(0%);
+    transition: filter .3s, transform .3s;
+}
+
+#textInputContainer {
+    margin-top: 20px;
+}
+
+#textInputContainer input {
+    width: 90%;
+    padding: 10px;
+    text-align: left;
+    font-size: 11px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 12px 15px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0 54px 55px,
+    rgba(0, 0, 0, 0.05) 0 -12px 30px,
+    rgba(0, 0, 0, 0.05) 0 4px 6px,
+    rgba(0, 0, 0, 0.05) 0 12px 3px,
+    rgba(0, 0, 0, 0.05) 0 -3px 5px
+}
+
+#submit {
+    /* margin-left: 40px; */
+    margin-top: 14px;
+    color: grey;
+}
+
+#submit:hover {
+    cursor: pointer;
+    color: red;
+}
+
+
+#output {
+    font-size: 12px;
+    margin-top: 20px;
+    width: 90%;
+
+}

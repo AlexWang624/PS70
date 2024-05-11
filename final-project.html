@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PS70: Introduction to Digital Fabrication</title>
+  <title>Final Project</title>
   <link href="./style.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,19 +19,734 @@
     <a href="./about.html" class="about">About</a>
   </div>
 
-  <!-- Rest of the website content goes here -->
-
   <div id="about">
-    <!-- About section content goes here -->
   </div>
 
   <div class="main-content">
     <p><span>&#8674;</span> Final Project</p>
-  </div>
 
-  <!-- Navigation Bars -->
+    <div class="content">
+      <h3>05/09/2024</h3>
+      <h2><a href="./final-project/final-project_files.zip"><span>&#8674;</span> Click Here to Download Project Files</a></h2>
+      <p>I made two projects as final projects as final projects for PS70: <strong>Ethereal Narrator 2.0</strong> as an extension for my previous web art project Ethereal Narrator made prior to taking PS70, and <strong>Language Death</strong>, a
+        interactive sound sculpture that I collaborated with my friend Stoker Kou in the MDes Mediums program at GSD.</p>
+      </br>
+      <h1>Ethereal Narrator 2.0</h1>
+      <p><strong>Idea:</strong></p>
+      <p>For Ethereal Narrator 2.0, I aim for making an interactive storytelling game with Tarot cards as story prompts.</p>
+      <p>I decided to follow my MVP process and documentation in <a href="https://declan-the-blender.github.io/PS70/week-9.html" target="blank">Week 7</a>. In Week 7, I had a first try to connect LDC display to ESP32 and fine-tuned a customized GPT
+        3.5 turbo model to use Tarot cards as prompts to generate stories based on the cards' visual symbols and interpretations. Please refer to my Week 7 documentation for previous progress.</p>
+      <p>In this documentation, I will focus on:</p>
+      <p>1. Making a web interface for receiving data from ESP32 for generating stories and sending them back to ESP32;</p>
+      <p>2. Connecting a TFT display and a OLED display to ESP32 and controlling them using two buttons and a potentiometer;</p>
+      <p>3. Making an enclosure;</p>
+      <p>4. Programming ESP32 and setting up Firebase;</p>
+      <p>The fourth step has bugs that were not solved at the time of the final fair, which I will also explain why and how I re-designed ESP32 code for a working demo with partial functions.</p>
+      </br>
+      <p><strong>Materials:</strong></p>
+      <p>Materials I used for the physical design include:</p>
+      <p>1. <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/hw-reference/esp32/user-guide-devkitm-1.html" target="blank">ESP32-DevKitM-1</a>;</p>
+      <p>2. 240X320 TFT LCD Display;</p>
+      <p>3. 128x64 0.96 Inch SSD1306 OLED Display Blue;</p>
+      <p>4. Potentiometer;</p>
+      <p>5. Buttons;</p>
+      <p>6. Wires;</p>
+      <p>7. Breadboard;</p>
+      <p>8. Clear 3mm acrylic boards;</p>
+      <p>9. 3mm wood boards;</p>
+      <p>10. ESP32 cable.</p>
+      </br>
+      <p><strong>Process:</p></strong>
+      <p><strong>1. Web Interface Design</strong></p>
+      <p>Continuing my MVP, I used my previous web art the foundation for the web interface for interacting with the GPT model:</p>
+      <figure class="image-container">
+        <img src="./week-1/ethereal-narrator_overview.gif" alt="Overview" />
+        <figcaption>Web Interface</figcaption>
+      </figure>
+      <p>To combine this web interface with my GPT model made as part of my MVP, I imported the model in the script.js file of this web interface (highlighted in red box):</p>
+      <figure class="image-container">
+        <img src="./final-project/gpt-model-import_01.png" style="width:40%" alt="Overview" />
+        <img src="./final-project/gpt-model-import_02.png" style="width:40%" alt="Overview" />
+        <figcaption>GPT Model Import</figcaption>
+        <p>Now this web art can actually real-time generating stories based on tarot cards selected.</p>
+        <p>The HTML code does not look good when I tried to include it in this documentation, but you can view it in the zip file I linked on the top of this documentation inside the "web-interface" folder in "ethereal-narrator-2.0". But the CSS and
+          Javascript code is as follows:</p>
+        <pre>
+          <code>
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap');
 
-  <script src="script.js"></script>
+* {
+    font-family: 'Silkscreen', sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tarot-cards {
+    width: 54%;
+}
+
+.response-container {
+    width: 48%;
+}
+
+
+.onClickTextOverImage {
+    width: 6.3vw;
+    height: 11.2vw;
+    background-size: cover;
+    display: inline-block;
+    margin: 12px;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    position: relative;
+    border-radius: 4px;
+    transform-origin: center;
+    filter: grayscale(100%);
+    transition: transform .3s, filter .3s, box-shadow .3s;
+    font-size:10px;
+}
+
+.onClickTextOverImage div {
+    position: absolute;
+    color: #fff;
+    padding: 8px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 4px;
+    padding-top: 75%;
+    text-align: center;
+    opacity: 0;
+    transition: .3s;
+}
+
+.onClickTextOverImage:hover div {
+    opacity: 1;
+    padding-top: 80%;
+}
+
+.onClickTextOverImage.show {
+    transform: scale(1.2);
+    box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
+    filter: grayscale(0%);
+    transition: filter .3s, transform .3s;
+}
+
+#textInputContainer {
+    margin-top: 20px;
+}
+
+#textInputContainer input {
+    width: 90%;
+    padding: 10px;
+    text-align: left;
+    font-size: 11px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 12px 15px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0 54px 55px,
+    rgba(0, 0, 0, 0.05) 0 -12px 30px,
+    rgba(0, 0, 0, 0.05) 0 4px 6px,
+    rgba(0, 0, 0, 0.05) 0 12px 3px,
+    rgba(0, 0, 0, 0.05) 0 -3px 5px
+}
+
+#submit {
+    /* margin-left: 40px; */
+    margin-top: 14px;
+    color: grey;
+}
+
+#submit:hover {
+    cursor: pointer;
+    color: red;
+}
+
+
+#output {
+    font-size: 12px;
+    margin-top: 20px;
+    width: 90%;
+
+}
+</code>
+</pre>
+        <pre>
+  <code>
+    const OPENAI_API_KEY = ***;
+    const submitButton = document.querySelector('#submit');
+    const outPutElement = document.querySelector('#output');
+    const historyElement = document.querySelector('.history');
+    const buttonElement = document.querySelector('button');
+    const textInputContainer = document.getElementById('textInputContainer');
+    const inputElement = textInputContainer.querySelector('input');
+    var textOverImages = document.querySelectorAll(".onClickTextOverImage");
+    var previousTextOverImage;
+    var clickCount = 0;
+
+
+    let conversationHistory = [{
+        "role": "system",
+        "content": "You are a creative novelist. You write experimental psychological thrillers that are based on the Major Arcana Tarot cards with horror and supernatural elements. Your stories have unexpected plot twists that keep the audience engaged and the settings of the stories are culturally ambiguous. Think outside the box and be creative."
+    }
+    ];
+
+    <span class="comment">// Function to handle adding messages to the conversation history</span>
+    function addToConversation(role, content) {
+        conversationHistory.push({ role, content });
+    }
+
+    <span class="comment">// Click Tarot Cards</span>
+    for (var i = 0; i < textOverImages.length; i++) {
+        <span class="comment">// When a card is on click, show the name of the card</span>
+        textOverImages[i].onclick = function () {
+            var classes = this.classList;
+            var title = this.querySelector("div").textContent;
+            if (classes.contains("show")) {
+                classes.remove("show");
+            }
+            else {
+                if (previousTextOverImage != null)
+                    previousTextOverImage.classList.remove("show");
+                previousTextOverImage = this;
+                classes.add("show");
+            }
+
+            <span class="comment">// Begin the story with the first click, and continue the story with sequential clicks</span>
+            var displayText;
+            if (clickCount === 0) {
+                <span class="comment">// First click shows the title</span>
+                <span class="comment">// displayText = "Begin a story with " + this.querySelector("div").textContent + " on the first position";</span>
+                displayText = "Begin a story with " + this.querySelector("div").textContent;
+            }
+            else if (clickCount === 9) {
+                <span class="comment">// Subsequent clicks show different text</span>
+                <span class="comment">// displayText = "End the story with " + this.querySelector("div").textContent + " on position number " + clickCount;</span>
+                displayText = "Based on the story you just wrote, end the story with " + this.querySelector("div").textContent;
+            }
+            else {
+                <span class="comment">// displayText = "Continue the story with " + this.querySelector("div").textContent + " on position number " + clickCount;</span>
+                displayText = "Based on the story you just wrote, continue the story with " + this.querySelector("div").textContent;
+            }
+
+            <span class="comment">// When the number of clicks is greater than or equal 10, clickCount returns to 0</span>
+            if (clickCount >= 9) {
+                clickCount = 0;
+            }
+
+            <span class="comment">// Display the name of the card as a text input</span>
+            textInputContainer.innerHTML = '';
+            var input = document.createElement("input");
+            input.type = "text";
+            input.value = displayText;
+            textInputContainer.appendChild(input);
+        }
+    }
+
+    <span class="comment">// Typing Output</span>
+    function typeOutText(element, text, typingSpeed) {
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < text.length) {
+                element.textContent += text.charAt(i);
+                i++;
+            } else {
+                clearInterval(interval);
+            }
+        }, typingSpeed);
+    }
+
+    <span class="comment">// GPT API</span>
+
+    async function getMessage() {
+        console.log('clicked');
+        clickCount++;
+        const inputElement = document.querySelector('#textInputContainer input');
+        const inputValue = inputElement.value;
+
+        addToConversation('user', inputValue);
+
+        const options = {
+            method: 'Post',
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: "ft:gpt-3.5-turbo-0613:personal::8WtrYSYG",
+                messages: conversationHistory,
+              temperature: 1,
+              max_tokens: 256,
+              top_p: 1,
+              frequency_penalty: 0,
+              presence_penalty: 0
+            })
+        };
+        console.log('inputValue: ' + conversationHistory);
+
+        try {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', options)
+            const data = await response.json()
+            <span class="comment">// console.log(data)</span>
+
+            <span class="comment">// Create a new paragraph element for the new response</span>
+            const newResponse = document.createElement('p');
+            <span class="comment">// newResponse.textContent = data.choices[0].message.content;</span>
+
+            <span class="comment">// Append the new response paragraph to the output element</span>
+            outPutElement.appendChild(newResponse);
+
+             <span class="comment">// Use the typeOutText function to display the response</span>
+             const storyText = data.choices[0].message.content;
+             typeOutText(newResponse, storyText, 10);
+
+
+            addToConversation('assistant', storyText);
+            <span class="comment">// outPutElement.textContent = data.choices[0].message.content</span>
+
+            if (data.choices[0].message.content && inputElement.value) {
+                const pElement =  document.createElement('p')
+                pElement.textContent = inputElement.value
+                pElement.addEventListener('click', () => changeInput(pElement.textContent))
+                historyElement.append(pElement)
+            }
+        } catch (error){
+            console.error(error)
+
+        }
+    }
+
+    submitButton.addEventListener('click', getMessage)
+  </code>
+</pre>
+        </br>
+        <p><strong>2.TFT and OLED Displays Connections and Controls</strong></p>
+        <p>Following <a href="https://www.youtube.com/watch?v=rq5yPJbX_uk&t=152s" target="blank">this tutorial</a>, I learned connecting the TFT display to ESP32 pins:</p>
+        <figure class="image-container">
+          <img src="./final-project/tutorial_01.png" style="width:80%" alt="TFT to ESP32 Pin Connection 01" />
+          <figcaption>TFT to ESP32 Pin Connection</figcaption>
+          <p></p>
+          <figure class="image-container">
+            <img src="./final-project/tft-connection.png" style="width:80%" alt="TFT to ESP32 Pin Connection 02" />
+            <figcaption>TFT to ESP32 Pin Connection</figcaption>
+            <p>And I followed <a href="https://randomnerdtutorials.com/esp32-ssd1306-oled-display-arduino-ide/" target="blank">this tutorial</a>, I connected the OLED display to ESP32 pins:</p>
+            <figure class="image-container">
+              <img src="./final-project/tutorial_02.png" style="width:80%" alt="OLED to ESP32 Pin Connection" />
+              <figcaption>OLED to ESP32 Pin Connection</figcaption>
+              <p>Then I connected the potentiometer and two buttons.</p>
+              <p>Here is a photo of my final connection:</p>
+              <figure class="image-container">
+                <img src="./final-project/esp32-connection.png" style="width:80%" alt="ESP32 Connection" />
+                <figcaption>ESP32 Connection</figcaption>
+                <p>The potentiometer will control scrolling 22 major arcana in the Tarot cards on the small OLED display. Once the player selects a tarot they want to choose as the prompt for generating stories, they will press the first button to
+                  confirm and submit this card into Firebase, which connects to the web interface with the GPT model. The generated stories will then appear on the large TFT display. If the story is too long to display on a single screen, the player
+                  can press the second button to flip to the next page of the story. For jumping back to the first page, they can press the first button again. I then programmed the code for controlling the displays, which I will explain fully in the
+                  fourth step of the process.</p>
+                </br>
+                <p><strong>3. Making an Enclosure</strong></p>
+                <p>I first measured the sizes of the breadboard and all components that needed to stick out from the enclosure, including the TFT and OLED displays, two buttons, the knob of the potentiometer, and an opening for connecting the cable.
+                </p>
+                <figure class="image-container">
+                  <img src="./final-project/measurement.png" style="width:80%" alt="Measurement" />
+                  <figcaption>Measurement</figcaption>
+                  <p>Based on the measurements, I used <a href="https://en.makercase.com/#/" target="blank">MakerCase</a> to design the box, and then I imported the design from this website into Adobe Illustrator to add more refined cut:</p>
+                  <figure class="image-container">
+                    <img src="./final-project/box-design_01.png" style="width:80%" alt="Box Design 01" />
+                    <img src="./final-project/box-design_02.png" style="width:80%" alt="Box Design 02" />
+                    <figcaption>Box Design</figcaption>
+                    <p>I laser cut the design using 3mm wood board, but then I found two problems: 1. the design was not exact to fit in components that I want leave partially outside the box; 2. I did not like wood that much and I felt like clear
+                      acrylic boards would work better.</p>
+                    <figure class="image-container">
+                      <img src="./final-project/laser-cutting-attempt.png" style="width:80%" alt="Laser Cutting Attempt" />
+                      <figcaption>Laser Cutting Attempt</figcaption>
+                      <p>So I fine-tuned the box design more and laser cut it on acrylics. They worked perfectly! Yay! I assembled the box and the ESP32 connections.</p>
+                      <figure class="image-container">
+                        <img src="./final-project/clear-box.jpg" style="width:80%" alt="Clear Box" />
+                        <figcaption>Clear Box!</figcaption>
+                        </br>
+                        <p><strong>4. ESP32 Programming and Firebase Set Up</strong></p>
+                        <p> As mentioned above, the potentiometer will control scrolling 22 major arcana in the Tarot cards on the small OLED display. Once the player selects a tarot they want to choose as the prompt for generating stories, they will
+                          press the first button to
+                          confirm and submit this card into Firebase, which connects to the web interface with the GPT model. The generated stories will then appear on the large TFT display. If the story is too long to display on a single screen, the
+                          player
+                          can press the second button to flip to the next page of the story. For jumping back to the first page, they can press the first button again.</p>
+                        <p>To add more fun, I also programmed that the stories will appear in a typing effect. Here is the code:</p>
+                        <pre>
+  <code>
+    #include <Wire.h>
+    #include <Adafruit_GFX.h>
+    #include <Adafruit_SSD1306.h>
+    #include <TFT_eSPI.h>
+
+    <span class="comment">// Create display objects</span>
+    Adafruit_SSD1306 display(128, 64, &Wire, -1);
+    TFT_eSPI tft = TFT_eSPI();
+
+    <span class="comment">// Button and display control variables</span>
+    bool displayOn = true;
+    int buttonPin1 = 33;  <span class="comment">// First button</span>
+    int buttonPin2 = 32;  <span class="comment">// Second button</span>
+    unsigned long lastDebounceTime = 0;
+    unsigned long debounceDelay = 50;
+    int lastButtonState1 = HIGH;
+    int lastButtonState2 = HIGH;
+    int lastPotValue = -1;
+    int currentCardIndex = 0;
+    int currentPage = 0;  <span class="comment">// Current text page</span>
+
+    const char* tarotNames[] = {
+      "The Fool", "The Magician", "The High Priestess", "The Empress", "The Emperor",
+      "The Hierophant", "The Lovers", "The Chariot", "Strength", "The Hermit",
+      "Wheel of Fortune", "Justice", "The Hanged Man", "Death", "Temperance",
+      "The Devil", "The Tower", "The Star", "The Moon", "The Sun", "Judgement", "The World"
+    };
+
+    const char* tarotDescriptions[] = {
+      "In a city of ever-shifting streets, Elias discovered a map that led to elusive realms. Each road traveled presented doors to impossible places—a library of lost words, a garden of singing trees. Elias realized the map was a gateway to alternate dimensions, but it also led him closer to a truth about his own existence, a truth that would shatter his perception of reality.",
+      "In a city cocooned within twilight, Elias unearthed an ancient codex on his 33rd birthday. Each page bore symbols that endowed him with mystical abilities tied to earthly elements. But what began as a wondrous journey soon turned ominous, as Elias realized the codex was an enigmatic gateway, beckoning him to plunder the world's magic for an unfathomable purpose.",
+      "In an ancient library, the librarian whispered forgotten knowledge to enchanted books, their pages shimmering with long-lost histories. Each book was a gate to a different world, a memory of civilizations that existed only in dreams. The librarian herself was the gatekeeper, guiding those who sought to unravel the mysteries of these realms. But what happened when she ventured into a book whose tale was unfinished?",
+      "In a city that bloomed with each of her footsteps, Maya discovered an inexplicable power—a touch that brought forth life in all its forms. Every plant and creature flourished under her hands, but soon she realized that her power could create both beauty and chaos. Each day a new life emerged, and Maya had to reckon with the responsibilities of her extraordinary gift, while the city transformed into a wild, unpredictable jungle.",
+      "In the sprawling megacity, a man emerged every midnight to claim dominion over deserted streets. He wielded a scepter that commanded architecture, reshaping buildings with a sweep. Each night, the city transformed into an unruly sentient entity, defying his attempts to control it. The man yearned for order, but the city revealed the futility of such desires, teaching him the beauty in chaos and the allure of unpredictability. The city, a sentient labyrinth, became his eternal companion in this surreal exploration of power and liberation.",
+      "In an enigmatic city, a bridge appeared every midnight, connecting two realms. It was atop this bridge that Kira, a young painter, encountered a figure known as The Hierophant. With each meeting, Kira's perception of reality blurred, and the bridge became a gateway to a spectral world. Kira's art began to manifest as living entities, and the bridge became a sentient entity, seeking liberation. A narrative of freedom, control, and the power of creation unfolded, revealing a city that was an ever-shifting tapestry of dream and waking life.",
+      "In a labyrinthine city, a mirror aficionado named Luca discovered a doorway that led to a surreal reflection realm. There, he met reflections that held the secret desires and untapped potential of those they mirrored. But as Luca dove deeper into this realm, he found himself becoming a reflection, his identity fading into a mere echo. To reclaim himself, he must confront the enigmatic reflection of a lost love, bound by a love that transcended the boundaries of reality.",
+      "In a city of perpetual motion, Asher discovered a mysterious rickshaw drawn by invisible steeds. This chariot carried him between dimensions, exploring realms where buildings pulsed with life and streets echoed ancient rhythms. But each journey unraveled Asher's own reality, blurring the line between dream and waking world. The chariot became a paradox, both liberation and prison, forcing Asher to confront his deepest fears and desires.",
+      "In a city where buildings transformed at will, Kassandra discovered an old tome, each page depicting elusive structures. As she unraveled its mysteries, Kassandra found herself in a labyrinthine edifice, wherein rooms echoed her past and future. The more she explored, the more the building shaped her, merging her strength and fears with its architecture, until she became a guardian of the ever-changing cityscape.",
+      "On a midnight subway, Elias discovered a hidden platform that materialized once a year. This platform was a gateway to a city of eternal darkness, where time stood still. Every visit revealed specters seeking guidance and companionship. Grappling with isolation and enlightenment, Elias became the guiding light for lost souls, illuminating both their paths and his own journey in this enigmatic city of shadows.",
+      "In a city governed by luck, Elias discovered an enigmatic wheel that determined his fate and fortune. Each spin unraveled a multitude of possibilities, from abundant wealth to miserable destitution. But Elias soon realized the wheel's real power - not just a manifestation of luck, but a mirror reflecting the true nature of one's desires. As the wheel spun, Elias's grip on reality and his own identity began to waver, leading him down a path of self-discovery and madness.",
+      "In a city governed by elusive time, Melody, a violinist, discovered an enchanted pocket watch that could pause and rewind moments. Playing melodies with the watch, she created symphonies that altered reality, making time flow backward or hang like a frozen aria. Every harmony, however, came with a consequence, as the city itself began to mimic her music, caught in a cycle of echoes and reversals.",
+      "In a city of perpetual twilight, a detective discovered a shadowy figure who turned reality upside down. His investigations unraveled a cosmic riddle, revealing a world suspended in delicate balance between dream and waking.",
+      "In a world ruled by a grim corporation, Lana discovered an antique wristwatch that could turn back time. Each rewind revealed an elusive figure, the Timekeeper, growing closer. Lana learned that every reversal brought consequences; people's lives became unhinged, reality itself twisted. The Timekeeper offered an ultimatum: stop using the watch, or become a living paradox trapped in an eternal cycle.",
+      "In the city of Liquare, where emotions flowed like rivers, Temperance Lazara was a bartender, mixing drinks that could change moods. One night, a mysterious traveler ordered a concoction, and its effects were beyond anything Temperance had experienced. As she delved into a labyrinth of liquid emotions, each drink revealed hidden desires and fears, teaching her the true nature of balance and transformation.",
+      "In a city where shadows masked secrets, there stood a haunted alley never appearing twice in the same place. Named 'The Devil's Thicket,' it appeared only to those desperate for a contract, a pact that came at a sinister price. The alley itself was a labyrinth, each turn revealing a darker truth about oneself. As midnight neared, the Thicket's power grew, threatening to ensnare the city in its web of twisted souls.",
+      "In a ruinous metropolis rose a tower entwined with ancient vines. Each night, the tower transformed, a gateway to realms of surreal beauty or abject dread. Among those who ascended, some returned forever changed, their souls a mosaic of dream and reality. As the tower's transformations grew wilder, it beckoned to a dreamer attuned to its enigma, offering a glimpse of the city's true nature.",
+      "In a city where streetlights mysteriously flickered out past midnight, a girl named Vega discovered a hidden shrine. Rendered a celestial being each night, she navigated dreamlike constellations and met spirits embodying starlight. However, as this astral connection grew, the city darkened, its shadows alive with ancient yearnings. Vega's quest unravelled the enigma of the city's lights and her own celestial nature, posing questions about the balance between illumination and darkness, and the transcendence of one's origins.",
+      "In a metropolis that vanished at twilight, Maxine discovered a secret realm controlled by moonlight. Each night, she followed a lunar path through surreal streets, where buildings receded into darkness or sprouted fantastic architecture. This realm's enigmatic residents, the Lunarians, wore masks and cloaks, and communicated through ethereal music. Maxine's goal: unravel the mystery of the Lunarians and their connection to the city's vanishing.",
+      "In a city clouded under eternal night, a man discovered a lamp that radiated sunlight, shaped like the elusive Sun card. When he transformed into a being of light, he found himself in a realm where buildings pulsed with energy and dreams took on physical form. Yet, every beam of sunlight he emitted cast a shadow that whispered ancient secrets. The line between enlightenment and darkness blurred as he sought an understanding of his newfound nature.",
+      "In a city veiled by perennial mist, every dawn revealed a world beyond reality. Lucius, a trumpeter, played a haunting melody that awakened long-lost souls from their slumber. But these awakenings had consequences, as memories and echoes intertwined, revealing a truth about the city's forgotten past. The mist was a shroud that hid not just a city but also its judgments and reckonings.",
+      "In a city that flowed with an ethereal light, Rhea discovered a pocket watch that controlled time itself. Every tick forward warped reality, while each backward turn unraveled Rhea's past. As the city transformed into a living labyrinth, Rhea realized the watch was a key to a cosmic puzzle, a gateway to untangle the threads of existence."
+    };
+
+    void setup() {
+      Serial.begin(9600);
+      pinMode(buttonPin1, INPUT_PULLUP);
+      pinMode(buttonPin2, INPUT_PULLUP);
+
+      tft.init();
+      tft.invertDisplay(1);
+      tft.setRotation(1);
+      tft.fillScreen(TFT_BLACK);
+
+      if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+        Serial.println(F("SSD1306 allocation failed"));
+        for (;;); <span class="comment">// Don't proceed, loop forever</span>
+      }
+      display.clearDisplay();
+      display.display();
+      displayText(tarotNames[currentCardIndex]);  <span class="comment">// Display initial Tarot name on OLED</span>
+    }
+
+    void loop() {
+      int readButton1 = digitalRead(buttonPin1);
+      int readButton2 = digitalRead(buttonPin2);
+
+      if (readButton1 != lastButtonState1 && millis() - lastDebounceTime > debounceDelay) {
+        if (readButton1 == HIGH && lastButtonState1 == LOW) {
+          displayOn = !displayOn;
+          Serial.println(displayOn ? "Display ON" : "Display OFF");
+          lastDebounceTime = millis();
+          if (displayOn) {
+            displayText(tarotNames[currentCardIndex]);  <span class="comment">// Update OLED display</span>
+            displayTypingEffect(tarotDescriptions[currentCardIndex], currentPage * 500, 500);  // Display text with typing effect on TFT
+          } else {
+            clearDisplay();
+          }
+        }
+        lastButtonState1 = readButton1;
+      }
+
+      if (readButton2 != lastButtonState2 && millis() - lastDebounceTime > debounceDelay) {
+        if (readButton2 == HIGH && lastButtonState2 == LOW) {
+          currentPage++;
+          displayTypingEffect(tarotDescriptions[currentCardIndex], currentPage * 500, 500);
+          lastDebounceTime = millis();
+        }
+        lastButtonState2 = readButton2;
+      }
+
+      updateDisplay();  <span class="comment">// Update display based on potentiometer</span>
+    }
+
+    void displayText(const char* text) {
+      display.clearDisplay();
+      display.setTextSize(2);
+      display.setTextColor(SSD1306_WHITE);
+      display.setCursor(0, 0);
+      display.println(text);
+      display.display();
+      Serial.println("Text updated: " + String(text));
+    }
+
+    void updateDisplay() {
+      int potValue = analogRead(25);
+      if (potValue != lastPotValue) {
+        currentCardIndex = map(potValue, 0, 4095, 0, 21);
+        displayText(tarotNames[currentCardIndex]);
+        currentPage = 0;  <span class="comment">// Reset to the first page of the new text</span>
+        lastPotValue = potValue;
+      }
+    }
+
+    void displayTypingEffect(const char* text, int start, int length) {
+      tft.fillScreen(TFT_BLACK);
+      tft.setCursor(0, 0);
+      tft.setTextColor(TFT_WHITE);
+      tft.setTextSize(2);
+      for (int i = start; text[i] != '\0' && i < start + length; i++) {
+        tft.print(text[i]);
+        delay(50);
+      }
+    }
+
+    void clearDisplay() {
+      display.clearDisplay();
+      display.display();
+      tft.fillScreen(TFT_BLACK);
+      Serial.println("Display cleared.");
+    }
+  </code>
+</pre>
+                        <p>Then I tried to setup Firebase, which I successully achieved connecting ESP32 to send data:</p>
+                        <figure class="image-container">
+                          <img src="./final-project/firebase.png" style="width:80%" alt="Firebase Connection" />
+                          <figcaption>Firebase Connection</figcaption>
+                          <p>And here is the test code I used for checking the connection:</p>
+                          <pre>
+    <code>
+      #include <Arduino.h>
+      #if defined(ESP32)
+        #include <WiFi.h>
+      #elif defined(ESP8266)
+        #include <ESP8266WiFi.h>
+      #endif
+      #include <Firebase_ESP_Client.h>
+
+      <span class="comment">//Provide the token generation process info.</span>
+      #include "addons/TokenHelper.h"
+      <span class="comment">//Provide the RTDB payload printing info and other helper functions.</span>
+      #include "addons/RTDBHelper.h"
+
+      <span class="comment">// Insert your network credentials</span>
+      #define WIFI_SSID "MAKERSPACE"
+      #define WIFI_PASSWORD "12345678"
+
+      <span class="comment">// Insert Firebase project API Key</span>
+      #define API_KEY "AIzaSyCGu4ayL6HRfLCBEwblgw3ltZ_0C2W4erQ"
+
+      <span class="comment">// Insert RTDB URLefine the RTDB URL */</span>
+      #define DATABASE_URL "https://ps70-final-project-2b179-default-rtdb.firebaseio.com/"
+
+      <span class="comment">//Define Firebase Data object</span>
+      FirebaseData fbdo;
+
+      FirebaseAuth auth;
+      FirebaseConfig config;
+
+      unsigned long sendDataPrevMillis = 0;
+      int count = 0;
+      bool signupOK = false;
+
+      void setup(){
+        Serial.begin(115200);
+        WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+        Serial.print("Connecting to Wi-Fi");
+        while (WiFi.status() != WL_CONNECTED){
+          Serial.print(".");
+          delay(300);
+        }
+        Serial.println();
+        Serial.print("Connected with IP: ");
+        Serial.println(WiFi.localIP());
+        Serial.println();
+
+        <span class="comment">/* Assign the api key (required) */</span>
+        config.api_key = API_KEY;
+
+        <span class="comment">/* Assign the RTDB URL (required) */</span>
+        config.database_url = DATABASE_URL;
+
+        <span class="comment">/* Sign up */</span>
+        if (Firebase.signUp(&config, &auth, "", "")){
+          Serial.println("ok");
+          signupOK = true;
+        }
+        else{
+          Serial.printf("%s\n", config.signer.signupError.message.c_str());
+        }
+
+        <span class="comment">/* Assign the callback function for the long running token generation task */</span>
+        config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+
+        Firebase.begin(&config, &auth);
+        Firebase.reconnectWiFi(true);
+      }
+
+      void loop(){
+        if (Firebase.ready() && signupOK && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0)){
+          sendDataPrevMillis = millis();
+          <span class="comment">// Write an Int number on the database path test/int</span>
+          if (Firebase.RTDB.setInt(&fbdo, "test/int", count)){
+            Serial.println("PASSED");
+            Serial.println("PATH: " + fbdo.dataPath());
+            Serial.println("TYPE: " + fbdo.dataType());
+          }
+          else {
+            Serial.println("FAILED");
+            Serial.println("REASON: " + fbdo.errorReason());
+          }
+          count++;
+
+          <span class="comment">// Write an Float number on the database path test/float</span>
+          if (Firebase.RTDB.setFloat(&fbdo, "test/float", 0.01 + random(0,100))){
+            Serial.println("PASSED");
+            Serial.println("PATH: " + fbdo.dataPath());
+            Serial.println("TYPE: " + fbdo.dataType());
+          }
+          else {
+            Serial.println("FAILED");
+            Serial.println("REASON: " + fbdo.errorReason());
+          }
+        }
+      }
+    </code>
+  </pre>
+                          <p> Perfect! Now I just needed to code for connecting ESP32, Firebase, and my web interface. Right? Right??? HOWEVER, this was where the bug in my project came in: <strong>I don't not know how to hide my OpenAI API
+                              Key.</strong> :(((((((((( So sad that my face got this long.</p>
+                          <p> Because of that, I could not publish my web interface onto GitHub Pages. OpenAI will detect that my API Key is public (aka. leaked) and it will disable the key really quick. Although looks like it was not that hard to
+                            hide the key according some Stack Overflow dude that commented how to do this as a beginner under <a href="https://stackoverflow.com/questions/44342276/how-to-push-code-to-github-hiding-the-api-keys">this post</a>:</p>
+                          <figure class="image-container">
+                            <img src="./final-project/dude.png" style="width:80%" alt="Stack Overflow Dude" />
+                            <figcaption>Stack Overflow Dude</figcaption>
+                            <p>But I still couldn't do it because: 1. I have no knowledge in backend except training my GPT model in Node.js, thanks to Youtube tutorials; 2. this problem came up very last minute because I thought I was 95% done with
+                              the project and I didn't expect this biggest one at the end. Anyway, I couldn't get my project to connect with the GPT model and actually generate stories real time.</p>
+                            <p>So I came up with an alternative solution. As you might have noticed above in the ESP32 code, I was "cheating": I made the machine "type" out preloaded stories assigned to each Tarot card. Not hi-tech, but at least it
+                              could (visually) convince people at the fair that the machine was writing stories. I also showed my website interface on my laptop, which worked perfectly with the GPT model, to let people play around and show that I
+                              actually had this model ready. Luckily no one was too curious in testing if my physical machine was generative, so I got a pass. But just want to be honest in my documentation about this bug that I still have and will
+                              try to fix soon.</p>
+                            <p><strong>Lesson learned: Never underestimate the project development time, and don't leave the project unfinished till the morning before the fair because you think you could finish some "small" part in two
+                                hours!</strong></p>
+                            </br>
+                            <p><strong>Final Outcome:</strong></p>
+                            <p>Except the bug that got me so frustrated, I am very happy with how small and minimalistic Ethereal Narrator 2.0 is. It looks so clean and I love it!</p>
+                            <figure class="image-container">
+                              <img src="./final-project/final-outcome_01.JPG" style="width:80%" alt="Final Outcome 01" />
+                              <figcaption>Final Outcome</figcaption>
+                              <p>Also recorded this demo video on how it works with people chatting in the background:</p>
+                              <video width="100%" height=auto controls>
+                                <source src="./final-project/demo-video.mp4" type="video/mp4">
+                              </video>
+                              <p>Noice.</p>
+
+                              </br>
+                              <h1>Language Death</h1>
+                              <p><strong>Idea:</strong></p>
+                              <p>Second project! This one is an interactive sound sculpture with three ultrasonic sensors that detect where the performer is and sends these data through Arduino to Max/MSP for responsive music. I collaborated with my
+                                friend Stoker, who made this amazing sculpture, and I worked on the sensor part and connected sensor data to Max/MSP.</p>
+                              </br>
+                              <p><strong>Process:</strong></p>
+                              <p><strong>1. Sensor Connection</strong></p>
+                              <p>Using very long wires, we connected ultrasonic sensors on the metal supporting frame around the sculpture and wrapped the wires around it. Then the sensors were connected to an Arduino Uno.
+                              <figure class="image-container">
+                                <img src="./final-project/wiring_01.JPG" style="width:80%" alt="Wiring 01" />
+                                <img src="./final-project/wiring_02.JPG" style="width:40%" alt="Wiring 02" />
+                                <img src="./final-project/wiring_03.JPG" style="width:40%" alt="Wiring 03" />
+                                <figcaption>Wiring</figcaption>
+                                </br>
+                                <p><strong>2. Arduino Code and Max/MSP Connection</strong></p>
+                                <pre>
+                                  <code>
+                                    #define TRIG1 2
+                                    #define ECHO1 3
+                                    #define TRIG2 4
+                                    #define ECHO2 5
+                                    #define TRIG3 6
+                                    #define ECHO3 7
+
+                                    void setup() {
+                                      pinMode(TRIG1, OUTPUT);
+                                      pinMode(ECHO1, INPUT);
+                                      pinMode(TRIG2, OUTPUT);
+                                      pinMode(ECHO2, INPUT);
+                                      pinMode(TRIG3, OUTPUT);
+                                      pinMode(ECHO3, INPUT);
+                                      Serial.begin(9600);
+                                    }
+
+                                    void loop() {
+                                      long distance1 = readUltrasonicDistance(TRIG1, ECHO1);
+                                      long distance2 = readUltrasonicDistance(TRIG2, ECHO2);
+                                      long distance3 = readUltrasonicDistance(TRIG3, ECHO3);
+                                    <span class="comment">//  Serial.print("Distance 1: ");</span>
+                                      Serial.print(distance1);
+                                      Serial.print(" ");
+                                    <span class="comment">//  Serial.print(" cm, Distance 2: ");</span>
+                                      Serial.print(distance2);
+                                      Serial.print(" ");
+                                    <span class="comment">//  Serial.print(" cm, Distance 3: ");</span>
+                                      Serial.println(distance3);
+                                    <span class="comment">//  Serial.println(" cm");</span>
+                                      delay(500);
+                                    }
+
+                                    long readUltrasonicDistance(int trigPin, int echoPin) {
+                                      digitalWrite(trigPin, LOW);
+                                      delayMicroseconds(2);
+                                      digitalWrite(trigPin, HIGH);
+                                      delayMicroseconds(10);
+                                      digitalWrite(trigPin, LOW);
+                                      long duration = pulseIn(echoPin, HIGH);
+                                      return duration / 29 / 2;
+                                    }
+                                  </code>
+                                </pre>
+                                <p>Max/MSP (the interface on the right) received data from Arduion using these selected modules on its patch:</p>
+                                <figure class="image-container">
+                                  <img src="./final-project/arduino-to-max.PNG" style="width:80%" alt="Arduino to Max" />
+                                  <figcaption>Arduino to Max</figcaption>
+                                  <p>The Arduino data was then connected to all these sound modules so that data from ultrasonic sensors can control keys that three sounds play:</p>
+                                  <figure class="image-container">
+                                    <img src="./final-project/max-patch.PNG" style="width:80%" alt="Max Patch" />
+                                    <figcaption>Max/MSP Patch</figcaption>
+                                    <p>Since Stoker made this part of the Max/MSP patch, I do not have this file, but you can see from the screenshot that there were so many layers in the sound.</p>
+                                    </br>
+                                    <p><strong>Final Outcome:</p></strong>
+                                    <p>Looks so beautiful （Ꙭ）</p>
+                                    <figure class="image-container">
+                                      <img src="./final-project/final-outcome_02.JPG" style="width:80%" alt="Final Outcome 02" />
+                                      <img src="./final-project/final-outcome_03.PNG" style="width:80%" alt="Final Outcome 03" />
+                                      <img src="./final-project/final-outcome_04.PNG" style="width:80%" alt="Final Outcome 04" />
+                                      <figcaption>Final Outcome</figcaption>
+                                      <p>And a video of Stoker and I interacting with it:</p>
+                                      <p>It's too large to upload on Github Pages so please click <a href="https://www.dropbox.com/scl/fi/2wnqjuo3m077rjagtujhd/language-death.MP4?rlkey=ywqa8p0er5az4kbz3i7puhh30&st=smkceor4&dl=0" target="blank">this link to dropbox</a> to view.
+                                      <!-- <video width="100%" height=auto controls>
+                                        <source src="./final-project/language-death.MP4" type="video/mp4">
+                                      </video> -->
+                                      </br>
+                                      </br>
+                                      <h1>That's all. Thanks for reading! :)</h1>
+                                      </br>
+                                      </br>
+
+
+    </div>
+    <!-- Navigation Bars -->
+
+    <script src="script.js"></script>
 </body>
 
 </html>
